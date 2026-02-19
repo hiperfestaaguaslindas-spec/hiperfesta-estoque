@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Hiper Festa | Controle de Balões</title>
+
+<style>
+:root {
+  --roxo: #6A2C91;
+  --amarelo: #F6C400;
+  --branco: #FFFFFF;
+  --cinza: #4A4A4A;
+  --cinza-claro: #F4F4F4;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--cinza-claro);
+  color: var(--cinza);
+}
+
+/* HEADER */
+header {
+  background: var(--roxo);
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  height: 70px;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  color: var(--branco);
+  margin: 0;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* CARD */
+.card {
+  background: var(--branco);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+h2 {
+  color: var(--roxo);
+}
+
+/* INPUTS */
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+/* BOTÃO */
+button {
+  background: var(--amarelo);
+  color: var(--roxo);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e0b000;
+}
+
+/* ALERTA */
+.alerta {
+  background: #fff3cd;
+  border-left: 6px solid var(--amarelo);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* TABELA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--roxo);
+  color: var(--branco);
+  padding: 10px;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <!-- Se quiser embutir a logo depois, a gente faz -->
+  <h1>Hiper Festa • Controle de Balões</h1>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Adicionar Balão</h2>
+
+    <input id="codigo" placeholder="Código de barras">
+    <input id="marca" placeholder="Marca (ex: São Roque)">
+
+    <select id="tamanho">
+      <option value="5">5"</option>
+      <option value="7">7"</option>
+      <option value="8">8"</option>
+      <option value="9">9"</option>
+      <option value="11">11"</option>
+      <option value="16">16"</option>
+    </select>
+
+    <input id="quantidade" type="number" placeholder="Quantidade">
+    <button onclick="adicionar()">Salvar</button>
+  </div>
+
+  <div class="card">
+    <h2>Filtro por tamanho</h2>
+    <select id="filtro" onchange="filtrar()">
+      <option value="">Todos</option>
+      <option value="5">5"</option>
+      <option value="7">7"</option>
+      <option value="8">8"</option>
+      <option value="9">9"</option>
+      <option value="11">11"</option>
+      <option value="16">16"</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <h2>Estoque Atual</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Marca</th>
+          <th>Tamanho</th>
+          <th>Quantidade</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  Hiper Festa © 2026
+</footer>
+
+<script>
+let estoque = JSON.parse(localStorage.getItem("estoque")) || [];
+
+function salvar() {
+  localStorage.setItem("estoque", JSON.stringify(estoque));
+}
+
+function adicionar() {
+  estoque.push({
+    codigo: codigo.value,
+    marca: marca.value,
+    tamanho: tamanho.value,
+    quantidade: Number(quantidade.value)
+  });
+  salvar();
+  listar(estoque);
+}
+
+function listar(lista) {
+  tabela.innerHTML = "";
+  lista.forEach(i => {
+    tabela.innerHTML += `
+      <tr>
+        <td>${i.codigo}</td>
+        <td>${i.marca}</td>
+        <td>${i.tamanho}"</td>
+        <td>${i.quantidade}</td>
+      </tr>`;
+  });
+}
+
+function filtrar() {
+  if (!filtro.value) listar(estoque);
+  else listar(estoque.filter(i => i.tamanho === filtro.value));
+}
+
+listar(estoque);
+</script>
+
+</body>
+</html>
